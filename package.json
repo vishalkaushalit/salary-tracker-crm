@@ -1,0 +1,21 @@
+{
+  "name": "salary-tracker-crm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Salary Tracker CRM - Fullstack Personal Finance Application",
+  "scripts": {
+    "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
+    "dev": "npm run dev:backend",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "seed:atlas": "node backend/scripts/seed-atlas.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5"
+  }
+}

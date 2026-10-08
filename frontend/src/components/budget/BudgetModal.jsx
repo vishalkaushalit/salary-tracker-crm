@@ -4,6 +4,19 @@ import { X, Check, Target } from 'lucide-react';
 import { MONTHS } from '../../utils/date';
 
 export const BudgetModal = ({ isOpen, onClose, onSave, initialData, categories = [], defaultMonth = 10, defaultYear = 2026 }) => {
+  const expenseCategories = React.useMemo(() => {
+    const filtered = categories.filter(c => c.type !== 'income');
+    return filtered.length > 0 ? filtered : [
+      { name: 'Food' },
+      { name: 'Recharges' },
+      { name: 'Medicines' },
+      { name: 'Entertainment' },
+      { name: 'Transportation' },
+      { name: 'Shopping' },
+      { name: 'Others' }
+    ];
+  }, [categories]);
+
   const [formData, setFormData] = useState({
     category: 'Food',
     month: defaultMonth,
@@ -16,20 +29,20 @@ export const BudgetModal = ({ isOpen, onClose, onSave, initialData, categories =
       setFormData({
         _id: initialData._id || initialData.id,
         id: initialData._id || initialData.id,
-        category: initialData.category || (categories[0]?.name || 'Food'),
+        category: initialData.category || (expenseCategories[0]?.name || 'Food'),
         month: initialData.month || defaultMonth,
         year: initialData.year || defaultYear,
         amount: initialData.amount ?? ''
       });
     } else {
       setFormData({
-        category: categories.length > 0 ? categories[0].name : 'Food',
+        category: expenseCategories.length > 0 ? expenseCategories[0].name : 'Food',
         month: defaultMonth,
         year: defaultYear,
         amount: ''
       });
     }
-  }, [initialData, defaultMonth, defaultYear, categories, isOpen]);
+  }, [initialData, defaultMonth, defaultYear, expenseCategories, isOpen]);
 
   if (!isOpen) return null;
 
@@ -77,7 +90,7 @@ export const BudgetModal = ({ isOpen, onClose, onSave, initialData, categories =
               onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               className="w-full text-xs font-medium px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
             >
-              {categories.map((c) => (
+              {expenseCategories.map((c) => (
                 <option key={c._id || c.name} value={c.name}>{c.name}</option>
               ))}
             </select>

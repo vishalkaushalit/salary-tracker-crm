@@ -14,6 +14,7 @@ import { api } from '../services/api';
 import { formatCurrency } from '../utils/currency';
 import { formatDate, MONTHS } from '../utils/date';
 import { useAuth } from '../context/AuthContext';
+import { Loader } from '../components/common/Loader';
 
 export const Salary = ({
   selectedMonth,
@@ -46,6 +47,15 @@ export const Salary = ({
   useEffect(() => {
     fetchSalaries();
   }, [selectedMonth, selectedYear, refreshTrigger]);
+
+  if (loading && salaries.length === 0) {
+    return (
+      <Loader 
+        message="Loading Monthly Salaries"
+        subMessage="Fetching salary records and net compensation breakdowns..."
+      />
+    );
+  }
 
   // Current selected month salary
   const currentSalary = salaries.find(s => s.month === selectedMonth && s.year === selectedYear);
@@ -88,21 +98,21 @@ export const Salary = ({
           <p className="text-xs text-slate-500">Configure base salary, bonuses, deductions, and view historical payouts</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <button
             onClick={handleDuplicate}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-xl shadow-sm transition-all"
+            className="w-full sm:w-auto sm:min-w-[180px] flex items-center justify-center gap-1.5 px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs whitespace-nowrap rounded-xl shadow-sm transition-all"
           >
-            <Copy className="w-3.5 h-3.5" />
-            <span>Duplicate Previous Month</span>
+            <Copy className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">Duplicate Previous Month</span>
           </button>
 
           <button
             onClick={() => onOpenSalaryModal(currentSalary)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm shadow-emerald-500/20 transition-all"
+            className="w-full sm:w-auto sm:min-w-[180px] flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs whitespace-nowrap rounded-xl shadow-sm shadow-emerald-500/20 transition-all"
           >
-            <Plus className="w-4 h-4" />
-            <span>{currentSalary ? 'Edit Current Salary' : '+ Add Salary'}</span>
+            <Plus className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">{currentSalary ? 'Edit Current Salary' : 'Add Salary'}</span>
           </button>
         </div>
       </div>

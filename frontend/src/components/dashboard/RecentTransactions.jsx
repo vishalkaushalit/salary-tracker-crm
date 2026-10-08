@@ -10,6 +10,9 @@ import {
   ShoppingBag, 
   Film, 
   CreditCard,
+  Smartphone,
+  Pill,
+  HelpCircle,
   Tag
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/currency';
@@ -17,14 +20,15 @@ import { formatRelativeDate } from '../../utils/date';
 
 const getCategoryIcon = (category) => {
   const cat = (category || '').toLowerCase();
-  if (cat.includes('food')) return Utensils;
-  if (cat.includes('transport') || cat.includes('fuel')) return Car;
-  if (cat.includes('grocer')) return ShoppingCart;
-  if (cat.includes('subscript') || cat.includes('netflix')) return Tv;
-  if (cat.includes('rent')) return Home;
-  if (cat.includes('util') || cat.includes('bill')) return Zap;
+  if (cat.includes('recharge') || cat.includes('mobile')) return Smartphone;
+  if (cat.includes('medicin') || cat.includes('health') || cat.includes('pharm')) return Pill;
+  if (cat.includes('food') || cat.includes('grocer')) return Utensils;
+  if (cat.includes('entertain') || cat.includes('subscript') || cat.includes('netflix')) return Film;
+  if (cat.includes('transport') || cat.includes('fuel') || cat.includes('cab')) return Car;
   if (cat.includes('shop')) return ShoppingBag;
-  if (cat.includes('entertain')) return Film;
+  if (cat.includes('other')) return HelpCircle;
+  if (cat.includes('rent')) return Home;
+  if (cat.includes('bill') || cat.includes('util')) return Zap;
   return Tag;
 };
 

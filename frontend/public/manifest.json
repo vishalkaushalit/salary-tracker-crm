@@ -1,0 +1,44 @@
+{
+  "name": "Salary Tracker CRM",
+  "short_name": "SalaryTracker",
+  "description": "Personal salary tracking, expense management, and budget CRM",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#10b981",
+  "scope": "/",
+  "categories": ["finance", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "url": "/",
+      "description": "Open Financial Dashboard"
+    },
+    {
+      "name": "Transactions",
+      "url": "/transactions",
+      "description": "View & Record Transactions"
+    },
+    {
+      "name": "Expenses",
+      "url": "/expenses",
+      "description": "Analyze Monthly Expenses"
+    }
+  ]
+}

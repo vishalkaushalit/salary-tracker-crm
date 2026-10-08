@@ -5,6 +5,7 @@ import { formatCurrency } from '../utils/currency';
 import { CategoryExpenseChart } from '../components/dashboard/CategoryExpenseChart';
 import { ExpenseChart } from '../components/dashboard/ExpenseChart';
 import { useAuth } from '../context/AuthContext';
+import { Loader } from '../components/common/Loader';
 
 export const Expenses = ({ selectedMonth, selectedYear, refreshTrigger }) => {
   const { user } = useAuth();
@@ -37,6 +38,15 @@ export const Expenses = ({ selectedMonth, selectedYear, refreshTrigger }) => {
   }, [selectedMonth, selectedYear, refreshTrigger]);
 
   const totalSpent = categoryData.reduce((sum, item) => sum + (item.value || 0), 0);
+
+  if (loading && categoryData.length === 0) {
+    return (
+      <Loader 
+        message="Analyzing Expenses"
+        subMessage="Mapping your categorized spending breakdown and trends..."
+      />
+    );
+  }
 
   return (
     <div className="space-y-6 pb-12 animate-fade-in">

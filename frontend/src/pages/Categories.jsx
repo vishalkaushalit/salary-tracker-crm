@@ -61,19 +61,60 @@ export const Categories = ({ categories = [], onRefresh }) => {
     }
   };
 
+  const [typeFilter, setTypeFilter] = useState('all');
+
+  const filteredCategories = categories.filter(c => {
+    if (typeFilter === 'all') return true;
+    return (c.type || 'expense') === typeFilter;
+  });
+
   return (
     <div className="space-y-6 pb-12 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">Expense & Income Categories</h2>
-          <p className="text-xs text-slate-500">Manage default financial categories and create custom spending buckets</p>
+          <h2 className="text-xl font-bold text-slate-900">Financial Categories</h2>
+          <p className="text-xs text-slate-500">Manage expense and income categories for your budget and tracking</p>
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm shadow-emerald-500/20 transition-all self-start sm:self-auto"
+          className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs whitespace-nowrap rounded-xl shadow-sm shadow-emerald-500/20 transition-all active:scale-95"
         >
-          <Plus className="w-4 h-4" />
-          <span>+ Add Custom Category</span>
+          <Plus className="w-4 h-4 shrink-0" />
+          <span className="whitespace-nowrap">Add Custom Category</span>
+        </button>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+        <button
+          onClick={() => setTypeFilter('all')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            typeFilter === 'all'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }`}
+        >
+          All ({categories.length})
+        </button>
+        <button
+          onClick={() => setTypeFilter('expense')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            typeFilter === 'expense'
+              ? 'bg-rose-500 text-white shadow-sm'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }`}
+        >
+          Expenses ({categories.filter(c => (c.type || 'expense') === 'expense').length})
+        </button>
+        <button
+          onClick={() => setTypeFilter('income')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+            typeFilter === 'income'
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+          }`}
+        >
+          Income ({categories.filter(c => c.type === 'income').length})
         </button>
       </div>
 
@@ -149,7 +190,7 @@ export const Categories = ({ categories = [], onRefresh }) => {
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {categories.map((c) => (
+        {filteredCategories.map((c) => (
           <div
             key={c._id || c.id}
             className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow"

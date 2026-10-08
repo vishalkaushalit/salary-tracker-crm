@@ -6,13 +6,18 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Save, 
-  RefreshCw 
+  RefreshCw,
+  Smartphone,
+  Download,
+  Share2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { usePWAInstall } from '../hooks/usePWAInstall';
 import { api } from '../services/api';
 
 export const Settings = ({ onDataReloaded }) => {
   const { user, updateUserProfile, dbStatus, checkDbStatus } = useAuth();
+  const { isInstalled, installApp } = usePWAInstall();
 
   const [formData, setFormData] = useState({
     name: user?.name || 'Admin User',
@@ -202,6 +207,88 @@ export const Settings = ({ onDataReloaded }) => {
         </div>
       </div>
 
+      {/* Progressive Web App (PWA) Section */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div className="flex items-center gap-2">
+            <Smartphone className="w-4 h-4 text-emerald-600" />
+            <h3 className="font-bold text-sm text-slate-900">Progressive Web App (PWA) & Mobile App</h3>
+          </div>
+          <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
+            isInstalled 
+              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+              : 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+          }`}>
+            {isInstalled ? '✓ Installed as Standalone App' : 'Browser Web Mode'}
+          </span>
+        </div>
+
+        <p className="text-xs text-slate-600 leading-relaxed">
+          Salary Tracker is built with a complete <strong>Web App Manifest</strong> and <strong>Service Worker</strong> caching layer. You can install it on iOS, Android, macOS, or Windows to use it with a native full-screen experience and offline shell caching.
+        </p>
+
+        {!isInstalled ? (
+          <div className="p-4 bg-gradient-to-r from-emerald-50/80 to-teal-50/80 rounded-xl border border-emerald-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <p className="font-bold text-xs text-emerald-950">Install on this device</p>
+              <p className="text-[11px] text-emerald-700">Add icon to your Home Screen or Dock with one tap</p>
+            </div>
+            <button
+              onClick={installApp}
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md shadow-emerald-600/20 transition-all shrink-0 active:scale-95"
+            >
+              <Download className="w-4 h-4" />
+              <span>Install Web App</span>
+            </button>
+          </div>
+        ) : (
+          <div className="p-3 bg-emerald-50 text-emerald-800 rounded-xl text-xs flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <span>App is currently running in standalone PWA mode!</span>
+          </div>
+        )}
+
+        {/* Installation Instructions by Platform */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+          <div className="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl space-y-1.5">
+            <p className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+              <span className="w-5 h-5 rounded-md bg-slate-200 flex items-center justify-center text-[10px]">🍎</span>
+              <span>iOS / Safari</span>
+            </p>
+            <ol className="text-[11px] text-slate-600 list-decimal list-inside space-y-1 leading-snug">
+              <li>Open this site in <strong>Safari</strong></li>
+              <li>Tap the <strong>Share</strong> button (<Share2 className="w-3 h-3 inline text-slate-500" />)</li>
+              <li>Scroll down & tap <strong>"Add to Home Screen"</strong></li>
+            </ol>
+          </div>
+
+          <div className="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl space-y-1.5">
+            <p className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+              <span className="w-5 h-5 rounded-md bg-slate-200 flex items-center justify-center text-[10px]">🤖</span>
+              <span>Android / Chrome</span>
+            </p>
+            <ol className="text-[11px] text-slate-600 list-decimal list-inside space-y-1 leading-snug">
+              <li>Open this site in <strong>Chrome</strong></li>
+              <li>Tap the 3 dots <strong>(⋮) menu</strong></li>
+              <li>Tap <strong>"Install app"</strong> or "Add to Home Screen"</li>
+            </ol>
+          </div>
+
+          <div className="p-3.5 bg-slate-50 border border-slate-200/70 rounded-xl space-y-1.5">
+            <p className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+              <span className="w-5 h-5 rounded-md bg-slate-200 flex items-center justify-center text-[10px]">💻</span>
+              <span>Desktop (Chrome / Edge)</span>
+            </p>
+            <ol className="text-[11px] text-slate-600 list-decimal list-inside space-y-1 leading-snug">
+              <li>Look at the top URL address bar</li>
+              <li>Click the <strong>Install</strong> icon (<Download className="w-3 h-3 inline text-slate-500" />) on the right</li>
+              <li>Click <strong>Install</strong> to add to Apps/Dock</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 };
+

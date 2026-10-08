@@ -17,9 +17,10 @@ const connectDB = async () => {
   try {
     const conn = await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 5000,
+      dbName: 'salary-tracker'
     });
     isConnected = true;
-    console.log(`\n✅ [MongoDB Connected]: ${conn.connection.host}`);
+    console.log(`\n✅ [MongoDB Connected]: ${conn.connection.host} (Database: ${conn.connection.name})`);
     return true;
   } catch (error) {
     console.error(`\n❌ [MongoDB Connection Error]: ${error.message}`);
@@ -35,6 +36,7 @@ const getDbStatus = () => {
   return {
     connected: isConnected || mongoose.connection.readyState === 1,
     readyState: mongoose.connection.readyState,
+    dbName: mongoose.connection.name || 'salary-tracker',
     hasCustomUri: isCustomUri,
     uriMasked: uri ? uri.replace(/:([^:@]+)@/, ':****@') : null
   };

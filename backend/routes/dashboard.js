@@ -195,14 +195,14 @@ router.get('/monthly', auth, async (req, res) => {
       });
     }
 
-    // Default historical baseline data if months are sparse, matching PRD Section 10 & 12
+    // Default historical baseline data with 30,000 monthly salary
     const defaultData = [
-      { month: 'May', monthNum: 5, salary: 50000, expenses: 22000, savings: 28000 },
-      { month: 'Jun', monthNum: 6, salary: 50000, expenses: 25400, savings: 24600 },
-      { month: 'Jul', monthNum: 7, salary: 52000, expenses: 21800, savings: 30200 },
-      { month: 'Aug', monthNum: 8, salary: 52000, expenses: 28600, savings: 23400 },
-      { month: 'Sep', monthNum: 9, salary: 52000, expenses: 26300, savings: 25700 },
-      { month: 'Oct', monthNum: 10, salary: 50000, expenses: 28450, savings: 21550 },
+      { month: 'May', monthNum: 5, salary: 30000, expenses: 22000, savings: 8000 },
+      { month: 'Jun', monthNum: 6, salary: 30000, expenses: 25400, savings: 4600 },
+      { month: 'Jul', monthNum: 7, salary: 30000, expenses: 21800, savings: 8200 },
+      { month: 'Aug', monthNum: 8, salary: 30000, expenses: 28600, savings: 1400 },
+      { month: 'Sep', monthNum: 9, salary: 30000, expenses: 26300, savings: 3700 },
+      { month: 'Oct', monthNum: 10, salary: 30000, expenses: 28450, savings: 1550 },
     ];
 
     const monthlyMap = {};
@@ -292,14 +292,18 @@ router.get('/category-expenses', auth, async (req, res) => {
 
     const categoryMap = {};
     const categoryColors = {
+      'Recharges': '#06b6d4',
+      'Medicines': '#ef4444',
       'Food': '#f59e0b',
-      'Rent': '#6366f1',
+      'Entertainment': '#8b5cf6',
       'Transportation': '#3b82f6',
       'Shopping': '#ec4899',
-      'Bills': '#64748b',
-      'Entertainment': '#8b5cf6',
-      'Groceries': '#10b981',
-      'Other': '#94a3b8'
+      'Others': '#64748b',
+      'Other': '#64748b',
+      'Rent': '#64748b',
+      'Bills': '#06b6d4',
+      'Healthcare': '#ef4444',
+      'Groceries': '#f59e0b'
     };
 
     transactions.forEach(t => {

@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const { connectDB } = require('./config/db');
@@ -36,10 +37,12 @@ app.use('/api/seed', seedRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
+  const { getDbStatus } = require('./config/db');
   res.json({
     status: 'ok',
     app: 'Salary Tracker CRM API',
     version: '1.0.0',
+    db: getDbStatus(),
     time: new Date().toISOString()
   });
 });
@@ -54,6 +57,10 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 [Salary Tracker CRM Server] Running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 [Salary Tracker CRM Server] Running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

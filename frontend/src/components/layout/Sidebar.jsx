@@ -11,13 +11,17 @@ import {
   LogOut,
   Database,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Download,
+  Smartphone
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { usePWAInstall } from '../../hooks/usePWAInstall';
 
 export const Sidebar = () => {
   const { user, logout, dbStatus } = useAuth();
+  const { isInstalled, installApp } = usePWAInstall();
   const location = useLocation();
 
   const navItems = [
@@ -67,6 +71,20 @@ export const Sidebar = () => {
           );
         })}
       </nav>
+
+      {/* PWA Install Button (shown when running in browser) */}
+      {!isInstalled && (
+        <div className="px-3 mb-2">
+          <button
+            onClick={installApp}
+            className="w-full flex items-center justify-center gap-2 py-2 px-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl text-xs font-bold shadow-sm shadow-emerald-500/20 transition-all active:scale-95"
+            title="Install as native mobile/desktop application"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Install Web App</span>
+          </button>
+        </div>
+      )}
 
       {/* Database Connection Pill */}
       <div className="px-4 py-3 mx-3 mb-3 bg-slate-50 rounded-xl border border-slate-200/60 text-xs">

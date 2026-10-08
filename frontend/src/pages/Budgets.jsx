@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Target, Plus, AlertTriangle, CheckCircle, Trash2, Edit2 } from 'lucide-react';
+import { Target, Plus, AlertTriangle, CheckCircle, Trash2, Edit2, TrendingUp, ShieldAlert, Wallet } from 'lucide-react';
 import { api } from '../services/api';
 import { formatCurrency } from '../utils/currency';
 import { MONTHS } from '../utils/date';
 import { useAuth } from '../context/AuthContext';
+import { Loader } from '../components/common/Loader';
 
 export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudgetChange, refreshTrigger }) => {
   const { user } = useAuth();
@@ -30,6 +31,15 @@ export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudg
     fetchBudgets();
   }, [selectedMonth, selectedYear, refreshTrigger]);
 
+  if (loading && budgets.length === 0) {
+    return (
+      <Loader 
+        message="Calculating Monthly Budgets"
+        subMessage="Checking category spending thresholds and alert limits..."
+      />
+    );
+  }
+
   const handleDelete = async (id) => {
     if (window.confirm('Delete this budget?')) {
       try {
@@ -44,24 +54,63 @@ export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudg
 
   const monthName = MONTHS.find(m => m.value === selectedMonth)?.name || 'October';
 
+  // Compute aggregate budget KPIs
+  const totalAllocated = budgets.reduce((sum, b) => sum + (Number(b.amount) || 0), 0);
+  const totalSpent = budgets.reduce((sum, b) => sum + (Number(b.spent) || 0), 0);
+  const totalRemaining = totalAllocated - totalSpent;
+  const overallPct = totalAllocated > 0 ? Math.round((totalSpent / totalAllocated) * 100) : 0;
+
   return (
-    <div className="space-y-6 pb-12 animate-fade-in">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-5 sm:space-y-6 pb-12 animate-fade-in">
+      
+      {/* Page Title & Add Button */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-900">{monthName} {selectedYear} Budgets</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-slate-900">{monthName} {selectedYear} Budgets</h2>
           <p className="text-xs text-slate-500">Set limits per category and monitor your spending progress</p>
         </div>
         <button
           onClick={() => onOpenBudgetModal()}
-          className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm shadow-emerald-500/20 transition-all self-start sm:self-auto"
+          className="w-full sm:w-auto flex items-center justify-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs whitespace-nowrap rounded-xl shadow-sm shadow-emerald-500/20 transition-all active:scale-95"
         >
-          <Plus className="w-4 h-4" />
-          <span>+ Add Budget</span>
+          <Plus className="w-4 h-4 shrink-0" />
+          <span className="whitespace-nowrap">Add Budget</span>
         </button>
       </div>
 
+      {/* Aggregate Overview Banner */}
+      {budgets.length > 0 && (
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-800">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-800/80">
+            <div className="pt-2 sm:pt-0 sm:pr-3">
+              <span className="text-[11px] text-slate-400 font-medium">Total Allocated</span>
+              <p className="text-base sm:text-xl font-bold text-white mt-0.5">{formatCurrency(totalAllocated, currency)}</p>
+            </div>
+            <div className="pt-2 sm:pt-0 sm:px-3">
+              <span className="text-[11px] text-slate-400 font-medium">Total Spent</span>
+              <p className="text-base sm:text-xl font-bold text-rose-400 mt-0.5">{formatCurrency(totalSpent, currency)}</p>
+            </div>
+            <div className="pt-2 sm:pt-0 sm:px-3">
+              <span className="text-[11px] text-slate-400 font-medium">Remaining</span>
+              <p className={`text-base sm:text-xl font-bold mt-0.5 ${totalRemaining >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {formatCurrency(totalRemaining, currency)}
+              </p>
+            </div>
+            <div className="pt-2 sm:pt-0 sm:pl-3">
+              <span className="text-[11px] text-slate-400 font-medium">Budget Utilization</span>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className={`text-base sm:text-xl font-bold ${overallPct > 100 ? 'text-rose-400' : overallPct >= 75 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  {overallPct}%
+                </span>
+                <span className="text-[10px] text-slate-400 hidden sm:inline">utilized</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Grid of Budget Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {budgets.map((b) => {
           const pct = b.percentage || 0;
           const isOver = pct >= 100;
@@ -79,11 +128,11 @@ export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudg
           }
 
           return (
-            <div key={b._id || b.id} className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div key={b._id || b.id} className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-slate-900 text-sm">{b.category}</h3>
-                  <div className="flex items-center gap-1.5">
+                  <h3 className="font-bold text-slate-900 text-sm truncate pr-2">{b.category}</h3>
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}`}>
                       {pct}%
                     </span>
@@ -105,7 +154,7 @@ export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudg
                 </div>
 
                 {/* Progress bar */}
-                <div className="space-y-1.5 mb-4">
+                <div className="space-y-1.5 mb-3.5">
                   <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
                     <div
                       className={`${progressColor} h-2.5 rounded-full transition-all duration-500`}
@@ -116,18 +165,18 @@ export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudg
 
                 <div className="grid grid-cols-2 gap-2 text-xs py-2 border-t border-slate-100">
                   <div>
-                    <span className="text-slate-400 block">Spent</span>
+                    <span className="text-slate-400 block text-[11px]">Spent</span>
                     <span className="font-bold text-slate-800">{formatCurrency(b.spent, currency)}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block">Budget</span>
+                    <span className="text-slate-400 block text-[11px]">Budget</span>
                     <span className="font-bold text-slate-800">{formatCurrency(b.amount, currency)}</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-2 text-xs flex justify-between items-center text-slate-500">
-                <span>Remaining:</span>
+              <div className="pt-2 text-xs flex justify-between items-center text-slate-500 border-t border-slate-50 mt-1">
+                <span className="text-[11px]">Remaining:</span>
                 <span className={`font-bold ${b.remaining < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                   {formatCurrency(b.remaining, currency)}
                 </span>

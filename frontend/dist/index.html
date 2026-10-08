@@ -2,18 +2,43 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Salary Tracker CRM - Financial Dashboard & Expenses</title>
     <meta name="description" content="Personal Salary Tracker CRM Dashboard - Track salary, expenses, budgets, savings, and analytics." />
+
+    <!-- PWA Web App Manifest & Colors -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#10b981" />
+    
+    <!-- iOS PWA Meta Tags & Icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Salary Tracker" />
+    <link rel="apple-touch-icon" href="/icon-192.svg" />
+
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-3Iztv4MQ.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-B5ncjJXX.css">
+    <script type="module" crossorigin src="/assets/index-Bl87Zln6.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CMMvc9z-.css">
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased selection:bg-emerald-500 selection:text-white">
     <div id="root"></div>
+    <script>
+      // Register PWA Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((reg) => {
+              console.log('✅ [PWA Service Worker] Registered successfully:', reg.scope);
+            })
+            .catch((err) => {
+              console.log('⚠️ [PWA Service Worker] Registration note:', err.message);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

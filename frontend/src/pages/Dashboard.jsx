@@ -8,6 +8,7 @@ import { SalaryExpenseChart } from '../components/dashboard/SalaryExpenseChart';
 import { DailySpendingChart } from '../components/dashboard/DailySpendingChart';
 import { BudgetProgressWidget } from '../components/dashboard/BudgetProgressWidget';
 import { RecentTransactions } from '../components/dashboard/RecentTransactions';
+import { Loader } from '../components/common/Loader';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -61,12 +62,10 @@ export const Dashboard = ({
 
   if (loading && !summaryData) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-semibold text-slate-500">Loading financial dashboard...</p>
-        </div>
-      </div>
+      <Loader 
+        message="Loading your financial dashboard"
+        subMessage="Aggregating monthly income, expenses, and budget limits..."
+      />
     );
   }
 

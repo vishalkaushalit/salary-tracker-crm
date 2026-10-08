@@ -38,7 +38,7 @@ export const SalaryModal = ({ isOpen, onClose, onSave, initialData, defaultMonth
       setFormData({
         month: defaultMonth,
         year: defaultYear,
-        base_salary: 50000,
+        base_salary: 30000,
         bonus: 0,
         commission: 0,
         other_income: 0,

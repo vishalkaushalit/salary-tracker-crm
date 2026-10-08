@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Check } from 'lucide-react';
 
-const DEFAULT_CATEGORIES = [
-  'Food', 'Groceries', 'Rent', 'Utilities', 'Transportation', 'Fuel', 
-  'Shopping', 'Entertainment', 'Healthcare', 'Education', 'Subscriptions', 
-  'Travel', 'Bills', 'EMI', 'Insurance', 'Personal', 'Salary', 'Other'
+const DEFAULT_EXPENSE_CATEGORIES = [
+  'Recharges', 'Medicines', 'Food', 'Entertainment', 'Transportation', 'Shopping', 'Others'
+];
+
+const DEFAULT_INCOME_CATEGORIES = [
+  'Salary', 'Investments'
 ];
 
 const PAYMENT_METHODS = [
@@ -25,9 +27,15 @@ export const TransactionModal = ({ isOpen, onClose, onSave, initialData, default
     notes: ''
   });
 
-  const availableCategories = categories.length > 0 
-    ? categories.map(c => c.name) 
-    : DEFAULT_CATEGORIES;
+  const availableCategories = React.useMemo(() => {
+    if (categories.length > 0) {
+      const filtered = categories
+        .filter(c => (c.type || 'expense') === formData.type)
+        .map(c => c.name);
+      if (filtered.length > 0) return filtered;
+    }
+    return formData.type === 'expense' ? DEFAULT_EXPENSE_CATEGORIES : DEFAULT_INCOME_CATEGORIES;
+  }, [categories, formData.type]);
 
   useEffect(() => {
     if (initialData) {
@@ -35,7 +43,7 @@ export const TransactionModal = ({ isOpen, onClose, onSave, initialData, default
         title: initialData.title || '',
         amount: initialData.amount || '',
         type: initialData.type || 'expense',
-        category: initialData.category || 'Food',
+        category: initialData.category || (initialData.type === 'income' ? 'Salary' : 'Food'),
         payment_method: initialData.payment_method || 'UPI',
         transaction_date: initialData.transaction_date ? new Date(initialData.transaction_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         account: initialData.account || 'Primary Account',
@@ -97,7 +105,7 @@ export const TransactionModal = ({ isOpen, onClose, onSave, initialData, default
           <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
             <button
               type="button"
-              onClick={() => setFormData({ ...formData, type: 'expense' })}
+              onClick={() => setFormData(prev => ({ ...prev, type: 'expense', category: DEFAULT_EXPENSE_CATEGORIES.includes(prev.category) ? prev.category : 'Food' }))}
               className={`py-1.5 text-xs font-bold rounded-lg transition-all ${
                 formData.type === 'expense'
                   ? 'bg-rose-500 text-white shadow-sm'

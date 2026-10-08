@@ -41,6 +41,29 @@ router.post('/register', async (req, res) => {
       });
 
       await user.save();
+
+      // Initialize starter ₹30,000 monthly salary record
+      try {
+        const Salary = require('../models/Salary');
+        const now = new Date();
+        await Salary.create({
+          user_id: user._id,
+          month: 10,
+          year: 2026,
+          base_salary: 30000,
+          bonus: 0,
+          commission: 0,
+          other_income: 0,
+          tax: 0,
+          deductions: 0,
+          net_salary: 30000,
+          payment_date: new Date('2026-10-01'),
+          notes: 'Standard monthly salary'
+        });
+      } catch (salaryErr) {
+        console.log('Starter salary note:', salaryErr.message);
+      }
+
       const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
 
       console.log(`\x1b[32m[AUTH SUCCESS]\x1b[0m Registered new user in MongoDB: ${user.name} (${user.email}) | ID: ${user._id}`);

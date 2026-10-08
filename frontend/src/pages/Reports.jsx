@@ -13,6 +13,7 @@ import { api } from '../services/api';
 import { formatCurrency } from '../utils/currency';
 import { MONTHS } from '../utils/date';
 import { useAuth } from '../context/AuthContext';
+import { Loader } from '../components/common/Loader';
 
 export const Reports = ({ selectedMonth, selectedYear, refreshTrigger }) => {
   const { user } = useAuth();
@@ -55,6 +56,15 @@ export const Reports = ({ selectedMonth, selectedYear, refreshTrigger }) => {
 
   const metrics = compareData?.metrics;
 
+  if (loading && !compareData) {
+    return (
+      <Loader 
+        message="Generating Financial Comparison"
+        subMessage="Analyzing monthly salaries, expense patterns, and net savings..."
+      />
+    );
+  }
+
   return (
     <div className="space-y-6 pb-12 animate-fade-in">
       
@@ -65,68 +75,72 @@ export const Reports = ({ selectedMonth, selectedYear, refreshTrigger }) => {
           <p className="text-xs text-slate-500">Analyze performance differences across months and export statements</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-xl shadow-sm transition-all"
+            className="w-full sm:w-auto sm:min-w-[130px] flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs whitespace-nowrap rounded-xl shadow-sm transition-all"
           >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Report</span>
+            <Printer className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">Print Report</span>
           </button>
           <button
             onClick={handleExportCsv}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm shadow-emerald-500/20 transition-all"
+            className="w-full sm:w-auto sm:min-w-[130px] flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs whitespace-nowrap rounded-xl shadow-sm shadow-emerald-500/20 transition-all"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
+            <Download className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">Export CSV</span>
           </button>
         </div>
       </div>
 
       {/* Monthly Comparison Module (PRD Section 16) */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-sm space-y-5 sm:space-y-6">
+        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5 sm:gap-4 pb-4 border-b border-slate-100">
           <div>
             <h3 className="text-base font-bold text-slate-900">Month-over-Month Comparison</h3>
             <p className="text-xs text-slate-500">Select two periods to see percentage shifts in earnings, spending, and savings</p>
           </div>
 
-          {/* Selectors */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <div className="flex items-center gap-1 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs">
-              <span className="text-slate-400 font-medium">Period A:</span>
+          {/* Selectors in One Row - Zero Scroll */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0">
+              <span className="text-slate-400 font-medium text-xs whitespace-nowrap">
+                Period A:
+              </span>
               <select
                 value={monthA}
                 onChange={(e) => setMonthA(Number(e.target.value))}
-                className="bg-transparent font-semibold text-slate-800 focus:outline-none"
+                className="bg-transparent font-bold text-xs text-slate-800 focus:outline-none cursor-pointer"
               >
                 {MONTHS.map(m => <option key={m.value} value={m.value}>{m.short}</option>)}
               </select>
               <select
                 value={yearA}
                 onChange={(e) => setYearA(Number(e.target.value))}
-                className="bg-transparent font-semibold text-slate-800 focus:outline-none"
+                className="bg-transparent font-medium text-xs text-slate-700 focus:outline-none cursor-pointer border-l border-slate-200 pl-1.5"
               >
                 <option value={2026}>2026</option>
                 <option value={2025}>2025</option>
               </select>
             </div>
 
-            <ArrowRight className="w-4 h-4 text-slate-400 hidden sm:block" />
+            <ArrowRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
 
-            <div className="flex items-center gap-1 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 text-xs">
-              <span className="text-slate-400 font-medium">Period B:</span>
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-50 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 text-xs shrink-0">
+              <span className="text-slate-400 font-medium text-xs whitespace-nowrap">
+                Period B:
+              </span>
               <select
                 value={monthB}
                 onChange={(e) => setMonthB(Number(e.target.value))}
-                className="bg-transparent font-semibold text-slate-800 focus:outline-none"
+                className="bg-transparent font-bold text-xs text-slate-800 focus:outline-none cursor-pointer"
               >
                 {MONTHS.map(m => <option key={m.value} value={m.value}>{m.short}</option>)}
               </select>
               <select
                 value={yearB}
                 onChange={(e) => setYearB(Number(e.target.value))}
-                className="bg-transparent font-semibold text-slate-800 focus:outline-none"
+                className="bg-transparent font-medium text-xs text-slate-700 focus:outline-none cursor-pointer border-l border-slate-200 pl-1.5"
               >
                 <option value={2026}>2026</option>
                 <option value={2025}>2025</option>

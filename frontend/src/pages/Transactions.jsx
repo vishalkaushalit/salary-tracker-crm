@@ -18,6 +18,7 @@ import { api } from '../services/api';
 import { formatCurrency } from '../utils/currency';
 import { formatDate } from '../utils/date';
 import { useAuth } from '../context/AuthContext';
+import { Loader } from '../components/common/Loader';
 
 export const Transactions = ({
   selectedMonth,
@@ -146,21 +147,21 @@ export const Transactions = ({
           <p className="text-xs text-slate-500">Record, filter and audit all your income and expenses</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto">
           <button
             onClick={handleExportCsv}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs rounded-xl shadow-sm transition-all"
+            className="w-full sm:w-auto sm:min-w-[145px] flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-xs whitespace-nowrap rounded-xl shadow-sm transition-all"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export CSV</span>
+            <Download className="w-3.5 h-3.5 shrink-0" />
+            <span className="whitespace-nowrap">Export CSV</span>
           </button>
 
           <button
             onClick={() => onOpenAddModal('expense')}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-sm shadow-emerald-500/20 transition-all"
+            className="w-full sm:w-auto sm:min-w-[145px] flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs whitespace-nowrap rounded-xl shadow-sm shadow-emerald-500/20 transition-all"
           >
-            <Plus className="w-4 h-4" />
-            <span>+ Add Transaction</span>
+            <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+            <span className="whitespace-nowrap">Add Transaction</span>
           </button>
         </div>
       </div>
@@ -186,7 +187,7 @@ export const Transactions = ({
             <select
               value={categoryFilter}
               onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); }}
-              className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+              className="w-full pl-3.5 pr-9 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium cursor-pointer"
             >
               <option value="All">All Categories</option>
               {categories.map(c => (
@@ -200,7 +201,7 @@ export const Transactions = ({
             <select
               value={typeFilter}
               onChange={(e) => { setTypeFilter(e.target.value); setPage(1); }}
-              className="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+              className="w-full pl-3.5 pr-9 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium cursor-pointer"
             >
               <option value="All">All Types</option>
               <option value="expense">Expenses Only</option>
@@ -212,8 +213,27 @@ export const Transactions = ({
 
         {/* Payment Method & Reset */}
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-500">Payment:</span>
+          
+          {/* Mobile Payment Method Dropdown */}
+          <div className="sm:hidden flex items-center gap-2 w-full">
+            <span className="font-semibold text-slate-500 shrink-0">Payment:</span>
+            <select
+              value={paymentFilter}
+              onChange={(e) => { setPaymentFilter(e.target.value); setPage(1); }}
+              className="flex-1 pl-3.5 pr-9 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold text-slate-700 cursor-pointer"
+            >
+              <option value="All">All Payment Methods</option>
+              <option value="UPI">UPI</option>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Debit Card">Debit Card</option>
+              <option value="Cash">Cash</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+            </select>
+          </div>
+
+          {/* Desktop & Tablet Pill Buttons */}
+          <div className="hidden sm:flex flex-wrap items-center gap-1.5">
+            <span className="font-semibold text-slate-500 mr-1">Payment:</span>
             {['All', 'UPI', 'Credit Card', 'Debit Card', 'Cash', 'Bank Transfer'].map(pm => (
               <button
                 key={pm}
@@ -371,6 +391,14 @@ export const Transactions = ({
                   </tr>
                 );
               })}
+
+              {loading && (
+                <tr>
+                  <td colSpan="7" className="py-12">
+                    <Loader message="Loading transactions..." variant="inline" />
+                  </td>
+                </tr>
+              )}
 
               {transactions.length === 0 && !loading && (
                 <tr>
