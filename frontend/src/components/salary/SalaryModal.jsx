@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Check, Calculator } from 'lucide-react';
 import { MONTHS } from '../../utils/date';
 import { formatCurrency } from '../../utils/currency';
@@ -79,9 +80,15 @@ export const SalaryModal = ({ isOpen, onClose, onSave, initialData, defaultMonth
     });
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+  return createPortal(
+    <div 
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col relative animate-fade-in"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
@@ -263,6 +270,7 @@ export const SalaryModal = ({ isOpen, onClose, onSave, initialData, defaultMonth
 
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
