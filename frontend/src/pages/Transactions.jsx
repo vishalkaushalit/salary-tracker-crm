@@ -298,160 +298,152 @@ export const Transactions = ({
         </div>
       )}
 
-      {/* Transaction Table (PRD Section 9) */}
+      {/* Transaction Table / Card */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/80 text-slate-600 border-b border-slate-100 uppercase tracking-wider text-[11px] font-semibold">
-              <tr>
-                <th className="py-3.5 px-4 w-10 text-center">
-                  <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    ref={el => { if (el) el.indeterminate = isSomeSelected; }}
-                    onChange={handleSelectAll}
-                    disabled={transactions.length === 0}
-                    className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer disabled:opacity-40"
-                    title="Select all on this page"
-                  />
-                </th>
-                <th className="py-3.5 px-4">Date</th>
-                <th className="py-3.5 px-4">Description / Title</th>
-                <th className="py-3.5 px-4">Category</th>
-                <th className="py-3.5 px-4">Payment</th>
-                <th className="py-3.5 px-4 text-right">Amount</th>
-                <th className="py-3.5 px-4 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
-                <tr>
-                  <td colSpan="7" className="py-16 px-4 text-center">
-                    <div className="flex flex-col items-center justify-center gap-3 animate-fade-in">
-                      <div className="relative w-10 h-10">
-                        {/* Outer subtle ring */}
-                        <div className="absolute inset-0 rounded-full border-[3px] border-emerald-100" />
-                        {/* Spinning ring */}
-                        <div className="absolute inset-0 rounded-full border-[3px] border-emerald-500 border-t-transparent animate-spin" />
-                        {/* Center Rupee Badge */}
-                        <div className="absolute inset-0 flex items-center justify-center text-emerald-600 font-bold text-xs select-none">
-                          ₹
-                        </div>
-                      </div>
-                      <div className="space-y-0.5">
-                        <p className="text-xs font-bold text-slate-800">Loading transactions...</p>
-                        <p className="text-[11px] text-slate-400">Fetching records for selected period</p>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              ) : transactions.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="py-16 px-4 text-center">
-                    <div className="flex flex-col items-center justify-center gap-2 animate-fade-in">
-                      <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400">
-                        <Search className="w-5 h-5" />
-                      </div>
-                      <p className="text-xs font-semibold text-slate-700">No transactions found</p>
-                      <p className="text-[11px] text-slate-400">No records matching your active filters for this month.</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                transactions.map((tx) => {
-                  const isExpense = tx.type === 'expense';
-                  const txId = tx._id || tx.id;
-                  const isSelected = selectedIds.includes(txId);
-
-                  return (
-                    <tr 
-                      key={txId} 
-                      className={`transition-colors ${isSelected ? 'bg-emerald-50/40' : 'hover:bg-slate-50/60'}`}
-                    >
-                      <td className="py-3.5 px-4 text-center">
-                        <input
-                          type="checkbox"
-                          checked={isSelected}
-                          onChange={() => handleToggleRow(txId)}
-                          className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                        />
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-600 font-medium whitespace-nowrap">
-                        {formatDate(tx.transaction_date)}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <div className="font-semibold text-slate-900">{tx.title}</div>
-                        {tx.description && (
-                          <div className="text-[11px] text-slate-400 truncate max-w-xs">{tx.description}</div>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <CategoryBadge category={tx.category} />
-                      </td>
-                      <td className="py-3.5 px-4 text-slate-600 font-medium">
-                        {tx.payment_method}
-                      </td>
-                      <td className="py-3.5 px-4 text-right whitespace-nowrap">
-                        <span className={`font-bold ${isExpense ? 'text-slate-900' : 'text-emerald-600'}`}>
-                          {isExpense ? '-' : '+'}{formatCurrency(tx.amount, currency)}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-4 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
-                          <button
-                            onClick={() => setViewTx(tx)}
-                            title="View Details"
-                            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-                          >
-                            <Eye className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => onOpenAddModal(tx.type, tx)}
-                            title="Edit"
-                            className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                          >
-                            <Edit2 className="w-3.5 h-3.5" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(txId)}
-                            title="Delete"
-                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination Footer */}
-        <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-          <span>
-            {loading ? 'Loading records...' : `Showing ${transactions.length} of ${totalCount} records`}
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={loading || page <= 1}
-              onClick={() => setPage(page - 1)}
-              className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40 hover:bg-slate-50 transition-colors"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-            <span className="font-semibold text-slate-700">Page {page}</span>
-            <button
-              disabled={loading || transactions.length < pageSize}
-              onClick={() => setPage(page + 1)}
-              className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40 hover:bg-slate-50 transition-colors"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+        {loading ? (
+          <div className="py-20 px-4 flex flex-col items-center justify-center text-center w-full animate-fade-in">
+            <div className="relative w-11 h-11 mb-3.5 flex items-center justify-center">
+              {/* Outer subtle ring */}
+              <div className="absolute inset-0 rounded-full border-[3px] border-emerald-100" />
+              {/* Spinning ring */}
+              <div className="absolute inset-0 rounded-full border-[3px] border-emerald-500 border-t-transparent animate-spin" />
+              {/* Center Rupee Badge */}
+              <div className="text-emerald-600 font-extrabold text-sm select-none">
+                ₹
+              </div>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-slate-800">Loading transactions...</p>
+              <p className="text-xs text-slate-400">Fetching records for selected period</p>
+            </div>
           </div>
-        </div>
+        ) : transactions.length === 0 ? (
+          <div className="py-20 px-4 flex flex-col items-center justify-center text-center w-full animate-fade-in">
+            <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 mb-3">
+              <Search className="w-6 h-6" />
+            </div>
+            <p className="text-sm font-bold text-slate-700">No transactions found</p>
+            <p className="text-xs text-slate-400 mt-1 max-w-sm">No records matching your active filters for this month.</p>
+          </div>
+        ) : (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50/80 text-slate-600 border-b border-slate-100 uppercase tracking-wider text-[11px] font-semibold">
+                  <tr>
+                    <th className="py-3.5 px-4 w-10 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isAllSelected}
+                        ref={el => { if (el) el.indeterminate = isSomeSelected; }}
+                        onChange={handleSelectAll}
+                        disabled={transactions.length === 0}
+                        className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer disabled:opacity-40"
+                        title="Select all on this page"
+                      />
+                    </th>
+                    <th className="py-3.5 px-4">Date</th>
+                    <th className="py-3.5 px-4">Description / Title</th>
+                    <th className="py-3.5 px-4">Category</th>
+                    <th className="py-3.5 px-4">Payment</th>
+                    <th className="py-3.5 px-4 text-right">Amount</th>
+                    <th className="py-3.5 px-4 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {transactions.map((tx) => {
+                    const isExpense = tx.type === 'expense';
+                    const txId = tx._id || tx.id;
+                    const isSelected = selectedIds.includes(txId);
+
+                    return (
+                      <tr 
+                        key={txId} 
+                        className={`transition-colors ${isSelected ? 'bg-emerald-50/40' : 'hover:bg-slate-50/60'}`}
+                      >
+                        <td className="py-3.5 px-4 text-center">
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => handleToggleRow(txId)}
+                            className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                          />
+                        </td>
+                        <td className="py-3.5 px-4 text-slate-600 font-medium whitespace-nowrap">
+                          {formatDate(tx.transaction_date)}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <div className="font-semibold text-slate-900">{tx.title}</div>
+                          {tx.description && (
+                            <div className="text-[11px] text-slate-400 truncate max-w-xs">{tx.description}</div>
+                          )}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <CategoryBadge category={tx.category} />
+                        </td>
+                        <td className="py-3.5 px-4 text-slate-600 font-medium">
+                          {tx.payment_method}
+                        </td>
+                        <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                          <span className={`font-bold ${isExpense ? 'text-slate-900' : 'text-emerald-600'}`}>
+                            {isExpense ? '-' : '+'}{formatCurrency(tx.amount, currency)}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-4 text-center">
+                          <div className="flex items-center justify-center gap-1.5">
+                            <button
+                              onClick={() => setViewTx(tx)}
+                              title="View Details"
+                              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => onOpenAddModal(tx.type, tx)}
+                              title="Edit"
+                              className="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            >
+                              <Edit2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(txId)}
+                              title="Delete"
+                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Footer */}
+            <div className="px-4 py-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <span>Showing {transactions.length} of {totalCount} records</span>
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={page <= 1}
+                  onClick={() => setPage(page - 1)}
+                  className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40 hover:bg-slate-50 transition-colors"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <span className="font-semibold text-slate-700">Page {page}</span>
+                <button
+                  disabled={transactions.length < pageSize}
+                  onClick={() => setPage(page + 1)}
+                  className="p-1.5 rounded-lg border border-slate-200 disabled:opacity-40 hover:bg-slate-50 transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Transaction Details Modal */}
