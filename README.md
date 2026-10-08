@@ -59,9 +59,23 @@ A modern, full-stack **Salary Tracker CRM Dashboard** designed for individuals a
 
 | Layer | Technologies |
 | :--- | :--- |
-| **Frontend** | React 18, Vite, Tailwind CSS, Recharts, Lucide Icons |
+| **Frontend** | React 18, React Router (`react-router-dom`), Vite, Tailwind CSS, Recharts, Lucide Icons |
 | **Backend** | Node.js, Express.js, Mongoose, JWT (jsonwebtoken), Bcryptjs, CORS, Dotenv |
 | **Database** | MongoDB Atlas / Local MongoDB (with In-Memory MockStore fallback) |
+
+### 🌐 Client-Side Routes & Direct URLs
+
+Every section in the CRM features a dedicated, bookmarkable and refreshable URL:
+
+* `/` (or `/overview`) — **Overview Dashboard**: Key KPI metric cards, comparative financial charts, and budget summary.
+* `/salary` — **Salary Management**: Monthly payroll calculation, salary history, and duplicate features.
+* `/transactions` — **Transactions**: Filterable transactions table with **bulk selection & batch delete**, export to CSV, and quick details.
+* `/expenses` — **Expenses**: In-depth expense analytics and category breakdown.
+* `/budgets` — **Budgets**: Category spending thresholds and alert levels.
+* `/reports` — **Reports**: Month-over-month comparative statements and print views.
+* `/categories` — **Categories**: Custom color-coded categories and subcategory lists.
+* `/settings` — **Settings & Database**: Profile configurations, currency options, and MongoDB connection inspector.
+* `/login` & `/register` — **Authentication**: Secure sign-in and sign-up with 1-click demo access.
 
 ---
 

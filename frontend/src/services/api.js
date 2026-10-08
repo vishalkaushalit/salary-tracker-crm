@@ -129,6 +129,14 @@ export const api = {
     });
     return handleResponse(res);
   },
+  bulkDeleteTransactions: async (ids) => {
+    const res = await fetch(`${API_BASE}/transactions/bulk-delete`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ ids }),
+    });
+    return handleResponse(res);
+  },
 
   // Categories
   getCategories: async () => {

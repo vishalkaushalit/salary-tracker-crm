@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { DollarSign, Lock, Mail, User, Phone, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Register = ({ onSwitchToLogin }) => {
   const { register } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,6 +23,7 @@ export const Register = ({ onSwitchToLogin }) => {
     setLoading(true);
     try {
       await register(formData);
+      navigate('/');
     } catch (err) {
       setError(err.message || 'Registration failed.');
     } finally {
@@ -128,13 +131,13 @@ export const Register = ({ onSwitchToLogin }) => {
 
         <div className="text-center text-xs text-slate-500">
           Already have an account?{' '}
-          <button
-            type="button"
+          <Link
+            to="/login"
             onClick={onSwitchToLogin}
             className="font-semibold text-emerald-600 hover:text-emerald-700 underline"
           >
             Sign In
-          </button>
+          </Link>
         </div>
 
       </div>

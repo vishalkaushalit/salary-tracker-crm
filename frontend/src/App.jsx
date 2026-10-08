@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
@@ -25,10 +26,6 @@ import { api } from './services/api';
 
 function MainApp() {
   const { user, loading } = useAuth();
-  const [authView, setAuthView] = useState('login'); // 'login' | 'register'
-
-  // Navigation State
-  const [activeTab, setActiveTab] = useState('overview');
 
   // Selected Period State (Default October 2026 as per PRD)
   const [selectedMonth, setSelectedMonth] = useState(10);
@@ -88,10 +85,13 @@ function MainApp() {
 
   // Auth pages if not logged in
   if (!user) {
-    if (authView === 'register') {
-      return <Register onSwitchToLogin={() => setAuthView('login')} />;
-    }
-    return <Login onSwitchToRegister={() => setAuthView('register')} />;
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    );
   }
 
   // Handler for Saving Transactions
@@ -149,7 +149,7 @@ function MainApp() {
       
       {/* Desktop Sidebar */}
       <div className="hidden md:block">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+        <Sidebar />
       </div>
 
       {/* Main Content Area */}
@@ -175,92 +175,112 @@ function MainApp() {
           alerts={alerts}
         />
 
-        <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto">
-          {activeTab === 'overview' && (
-            <Dashboard
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              onNavigateTab={setActiveTab}
-              onCategoryFilter={setCategoryFilterForTx}
-              refreshTrigger={refreshCounter}
+        <main className="flex-1 p-3.5 pb-24 sm:p-6 md:p-8 md:pb-8 max-w-7xl w-full mx-auto">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Dashboard
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                  onCategoryFilter={setCategoryFilterForTx}
+                  refreshTrigger={refreshCounter}
+                />
+              }
             />
-          )}
-
-          {activeTab === 'salary' && (
-            <Salary
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              refreshTrigger={refreshCounter}
-              onSalaryChange={triggerRefresh}
-              onOpenSalaryModal={(sal) => {
-                setEditSalaryData(sal || null);
-                setSalaryModalOpen(true);
-              }}
+            <Route path="/overview" element={<Navigate to="/" replace />} />
+            <Route
+              path="/salary"
+              element={
+                <Salary
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                  refreshTrigger={refreshCounter}
+                  onSalaryChange={triggerRefresh}
+                  onOpenSalaryModal={(sal) => {
+                    setEditSalaryData(sal || null);
+                    setSalaryModalOpen(true);
+                  }}
+                />
+              }
             />
-          )}
-
-          {activeTab === 'transactions' && (
-            <Transactions
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              categories={categories}
-              initialCategoryFilter={categoryFilterForTx}
-              refreshTrigger={refreshCounter}
-              onTransactionChange={triggerRefresh}
-              onOpenAddModal={(type, tx) => {
-                setTxModalType(type || 'expense');
-                setEditTxData(tx || null);
-                setTxModalOpen(true);
-              }}
+            <Route
+              path="/transactions"
+              element={
+                <Transactions
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                  categories={categories}
+                  initialCategoryFilter={categoryFilterForTx}
+                  refreshTrigger={refreshCounter}
+                  onTransactionChange={triggerRefresh}
+                  onOpenAddModal={(type, tx) => {
+                    setTxModalType(type || 'expense');
+                    setEditTxData(tx || null);
+                    setTxModalOpen(true);
+                  }}
+                />
+              }
             />
-          )}
-
-          {activeTab === 'expenses' && (
-            <Expenses
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              refreshTrigger={refreshCounter}
+            <Route
+              path="/expenses"
+              element={
+                <Expenses
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                  refreshTrigger={refreshCounter}
+                />
+              }
             />
-          )}
-
-          {activeTab === 'budgets' && (
-            <Budgets
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              onOpenBudgetModal={(b) => {
-                setEditBudgetData(b || null);
-                setBudgetModalOpen(true);
-              }}
-              onBudgetChange={triggerRefresh}
-              refreshTrigger={refreshCounter}
+            <Route
+              path="/budgets"
+              element={
+                <Budgets
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                  onOpenBudgetModal={(b) => {
+                    setEditBudgetData(b || null);
+                    setBudgetModalOpen(true);
+                  }}
+                  onBudgetChange={triggerRefresh}
+                  refreshTrigger={refreshCounter}
+                />
+              }
             />
-          )}
-
-          {activeTab === 'reports' && (
-            <Reports
-              selectedMonth={selectedMonth}
-              selectedYear={selectedYear}
-              refreshTrigger={refreshCounter}
+            <Route
+              path="/reports"
+              element={
+                <Reports
+                  selectedMonth={selectedMonth}
+                  selectedYear={selectedYear}
+                  refreshTrigger={refreshCounter}
+                />
+              }
             />
-          )}
-
-          {activeTab === 'categories' && (
-            <Categories
-              categories={categories}
-              onRefresh={triggerRefresh}
+            <Route
+              path="/categories"
+              element={
+                <Categories
+                  categories={categories}
+                  onRefresh={triggerRefresh}
+                />
+              }
             />
-          )}
-
-          {activeTab === 'settings' && (
-            <Settings onDataReloaded={triggerRefresh} />
-          )}
+            <Route
+              path="/settings"
+              element={
+                <Settings onDataReloaded={triggerRefresh} />
+              }
+            />
+            <Route path="/login" element={<Navigate to="/" replace />} />
+            <Route path="/register" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </main>
       </div>
 
       {/* Mobile Bottom Navigation */}
       <MobileNav
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
         onOpenQuickAdd={() => {
           setTxModalType('expense');
           setEditTxData(null);

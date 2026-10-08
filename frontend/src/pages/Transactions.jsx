@@ -48,6 +48,10 @@ export const Transactions = ({
   // View modal
   const [viewTx, setViewTx] = useState(null);
 
+  // Bulk Selection
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
+
   const fetchTransactions = async () => {
     try {
       setLoading(true);
@@ -78,12 +82,48 @@ export const Transactions = ({
 
   useEffect(() => {
     fetchTransactions();
+    setSelectedIds([]);
   }, [selectedMonth, selectedYear, categoryFilter, paymentFilter, typeFilter, page, search, refreshTrigger]);
+
+  const isAllSelected = transactions.length > 0 && transactions.every(t => selectedIds.includes(t._id || t.id));
+  const isSomeSelected = selectedIds.length > 0 && !isAllSelected;
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(transactions.map(t => t._id || t.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleToggleRow = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    if (window.confirm(`Are you sure you want to delete ${selectedIds.length} selected transaction(s)? This cannot be undone.`)) {
+      try {
+        setIsDeletingBulk(true);
+        await api.bulkDeleteTransactions(selectedIds);
+        setSelectedIds([]);
+        fetchTransactions();
+        if (onTransactionChange) onTransactionChange();
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        setIsDeletingBulk(false);
+      }
+    }
+  };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this transaction?')) {
       try {
         await api.deleteTransaction(id);
+        setSelectedIds(prev => prev.filter(item => item !== id));
         fetchTransactions();
         if (onTransactionChange) onTransactionChange();
       } catch (err) {
@@ -207,12 +247,53 @@ export const Transactions = ({
         </div>
       </div>
 
+      {/* Bulk Actions Floating Bar */}
+      {selectedIds.length > 0 && (
+        <div className="bg-slate-900 text-white px-5 py-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-xl border border-slate-800 animate-fade-in">
+          <div className="flex items-center gap-2.5 text-xs font-semibold">
+            <span className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold text-xs">
+              {selectedIds.length}
+            </span>
+            <span>{selectedIds.length} transaction{selectedIds.length > 1 ? 's' : ''} selected</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setSelectedIds([])}
+              className="px-3 py-1.5 text-xs text-slate-300 hover:text-white transition-colors font-medium"
+            >
+              Clear Selection
+            </button>
+
+            <button
+              onClick={handleBulkDelete}
+              disabled={isDeletingBulk}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs rounded-xl shadow-sm shadow-rose-500/20 transition-all disabled:opacity-50"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>{isDeletingBulk ? 'Deleting...' : `Delete Selected (${selectedIds.length})`}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Transaction Table (PRD Section 9) */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50/80 text-slate-600 border-b border-slate-100 uppercase tracking-wider text-[11px] font-semibold">
               <tr>
+                <th className="py-3.5 px-4 w-10 text-center">
+                  <input
+                    type="checkbox"
+                    checked={isAllSelected}
+                    ref={el => { if (el) el.indeterminate = isSomeSelected; }}
+                    onChange={handleSelectAll}
+                    disabled={transactions.length === 0}
+                    className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer disabled:opacity-40"
+                    title="Select all on this page"
+                  />
+                </th>
                 <th className="py-3.5 px-4">Date</th>
                 <th className="py-3.5 px-4">Description / Title</th>
                 <th className="py-3.5 px-4">Category</th>
@@ -224,8 +305,22 @@ export const Transactions = ({
             <tbody className="divide-y divide-slate-100">
               {transactions.map((tx) => {
                 const isExpense = tx.type === 'expense';
+                const txId = tx._id || tx.id;
+                const isSelected = selectedIds.includes(txId);
+
                 return (
-                  <tr key={tx._id || tx.id} className="hover:bg-slate-50/60 transition-colors">
+                  <tr 
+                    key={txId} 
+                    className={`transition-colors ${isSelected ? 'bg-emerald-50/40' : 'hover:bg-slate-50/60'}`}
+                  >
+                    <td className="py-3.5 px-4 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleToggleRow(txId)}
+                        className="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                      />
+                    </td>
                     <td className="py-3.5 px-4 text-slate-600 font-medium whitespace-nowrap">
                       {formatDate(tx.transaction_date)}
                     </td>
@@ -265,7 +360,7 @@ export const Transactions = ({
                           <Edit2 className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() => handleDelete(tx._id || tx.id)}
+                          onClick={() => handleDelete(txId)}
                           title="Delete"
                           className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                         >
@@ -279,7 +374,7 @@ export const Transactions = ({
 
               {transactions.length === 0 && !loading && (
                 <tr>
-                  <td colSpan="6" className="py-12 text-center text-slate-400">
+                  <td colSpan="7" className="py-12 text-center text-slate-400">
                     No transactions found matching your criteria.
                   </td>
                 </tr>

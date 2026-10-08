@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { DollarSign, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Login = ({ onSwitchToRegister }) => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -15,6 +17,7 @@ export const Login = ({ onSwitchToRegister }) => {
     setLoading(true);
     try {
       await login(email, password);
+      navigate('/');
     } catch (err) {
       setError(err.message || 'Login failed. Please check credentials.');
     } finally {
@@ -29,6 +32,7 @@ export const Login = ({ onSwitchToRegister }) => {
     setError('');
     try {
       await login('admin@salarytracker.com', 'admin123');
+      navigate('/');
     } catch (err) {
       setError(err.message || 'Demo login failed.');
     } finally {
@@ -111,13 +115,13 @@ export const Login = ({ onSwitchToRegister }) => {
 
         <div className="text-center text-xs text-slate-500">
           Don't have an account?{' '}
-          <button
-            type="button"
+          <Link
+            to="/register"
             onClick={onSwitchToRegister}
             className="font-semibold text-emerald-600 hover:text-emerald-700 underline"
           >
             Create one
-          </button>
+          </Link>
         </div>
 
       </div>

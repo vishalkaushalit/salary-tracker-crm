@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SummaryCard } from '../components/dashboard/SummaryCard';
 import { FinancialSummarySection } from '../components/dashboard/FinancialSummarySection';
 import { ExpenseChart } from '../components/dashboard/ExpenseChart';
@@ -18,6 +19,7 @@ export const Dashboard = ({
   refreshTrigger
 }) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [summaryData, setSummaryData] = useState(null);
   const [monthlyData, setMonthlyData] = useState([]);
@@ -91,6 +93,7 @@ export const Dashboard = ({
           onCategorySelect={(cat) => {
             if (onCategoryFilter) onCategoryFilter(cat);
             if (onNavigateTab) onNavigateTab('transactions');
+            navigate('/transactions');
           }}
         />
       </div>
@@ -106,12 +109,18 @@ export const Dashboard = ({
         <BudgetProgressWidget
           budgets={budgetList}
           currency={currency}
-          onViewAll={() => onNavigateTab && onNavigateTab('budgets')}
+          onViewAll={() => {
+            if (onNavigateTab) onNavigateTab('budgets');
+            navigate('/budgets');
+          }}
         />
         <RecentTransactions
           transactions={recentTx}
           currency={currency}
-          onViewAll={() => onNavigateTab && onNavigateTab('transactions')}
+          onViewAll={() => {
+            if (onNavigateTab) onNavigateTab('transactions');
+            navigate('/transactions');
+          }}
         />
       </div>
 

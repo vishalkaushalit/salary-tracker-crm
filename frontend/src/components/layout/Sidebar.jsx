@@ -13,20 +13,22 @@ import {
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-export const Sidebar = ({ activeTab, setActiveTab }) => {
+export const Sidebar = () => {
   const { user, logout, dbStatus } = useAuth();
+  const location = useLocation();
 
   const navItems = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'salary', label: 'Salary', icon: DollarSign },
-    { id: 'transactions', label: 'Transactions', icon: ArrowLeftRight },
-    { id: 'expenses', label: 'Expenses', icon: PieChart },
-    { id: 'budgets', label: 'Budgets', icon: Target },
-    { id: 'reports', label: 'Reports', icon: FileText },
-    { id: 'categories', label: 'Categories', icon: Tags },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { path: '/', label: 'Overview', icon: LayoutDashboard },
+    { path: '/salary', label: 'Salary', icon: DollarSign },
+    { path: '/transactions', label: 'Transactions', icon: ArrowLeftRight },
+    { path: '/expenses', label: 'Expenses', icon: PieChart },
+    { path: '/budgets', label: 'Budgets', icon: Target },
+    { path: '/reports', label: 'Reports', icon: FileText },
+    { path: '/categories', label: 'Categories', icon: Tags },
+    { path: '/settings', label: 'Settings', icon: Settings },
   ];
 
   return (
@@ -46,11 +48,13 @@ export const Sidebar = ({ activeTab, setActiveTab }) => {
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id;
+          const isActive = item.path === '/'
+            ? location.pathname === '/' || location.pathname === '/overview'
+            : location.pathname.startsWith(item.path);
           return (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
+            <Link
+              key={item.path}
+              to={item.path}
               className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                 isActive
                   ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-500/30'
@@ -59,7 +63,7 @@ export const Sidebar = ({ activeTab, setActiveTab }) => {
             >
               <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
               <span>{item.label}</span>
-            </button>
+            </Link>
           );
         })}
       </nav>

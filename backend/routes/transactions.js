@@ -336,6 +336,51 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
+// @route   POST /api/transactions/bulk-delete
+router.post('/bulk-delete', auth, async (req, res) => {
+  try {
+    const userId = req.user._id || req.user.id;
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ success: false, message: 'Please provide an array of transaction IDs to delete.' });
+    }
+
+    if (mongoose.connection.readyState === 1) {
+      const validIds = ids.filter(id => mongoose.Types.ObjectId.isValid(id));
+      const result = await Transaction.deleteMany({
+        _id: { $in: validIds },
+        user_id: userId
+      });
+
+      console.log(`\x1b[32m[TX SUCCESS]\x1b[0m Bulk deleted ${result.deletedCount} transactions for user ${userId}`);
+
+      return res.json({
+        success: true,
+        message: `Successfully deleted ${result.deletedCount} transaction(s)`,
+        deletedCount: result.deletedCount
+      });
+    } else {
+      const initialCount = mockStore.transactions.length;
+      mockStore.transactions = mockStore.transactions.filter(
+        t => !(ids.includes(t._id) || ids.includes(t.id)) || String(t.user_id) !== String(userId)
+      );
+      const deletedCount = initialCount - mockStore.transactions.length;
+
+      console.log(`\x1b[32m[TX SUCCESS]\x1b[0m Bulk deleted ${deletedCount} transactions in mockStore for user ${userId}`);
+
+      return res.json({
+        success: true,
+        message: `Successfully deleted ${deletedCount} transaction(s)`,
+        deletedCount
+      });
+    }
+  } catch (error) {
+    console.error(`\x1b[31m[TX FAILURE]\x1b[0m Bulk delete error: ${error.message}`);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // @route   DELETE /api/transactions/:id
 router.delete('/:id', auth, async (req, res) => {
   try {
