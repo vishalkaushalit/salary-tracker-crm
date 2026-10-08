@@ -132,25 +132,9 @@ export const Register = ({ onSwitchToLogin }) => {
         {/* Right Registration Form (7 cols) */}
         <div className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-center bg-slate-900/40">
           
-          {/* Header Segmented Switcher */}
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-bold text-white">Create Account</h3>
-              <p className="text-xs text-slate-400">Join Salary Tracker CRM in 30 seconds</p>
-            </div>
-            {/* Tabs */}
-            <div className="flex p-1 bg-slate-800/80 rounded-xl border border-white/5 text-xs font-semibold">
-              <Link
-                to="/login"
-                onClick={onSwitchToLogin}
-                className="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-colors"
-              >
-                Sign In
-              </Link>
-              <span className="px-3 py-1.5 rounded-lg bg-emerald-500 text-white shadow-sm font-bold">
-                Register
-              </span>
-            </div>
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-white">Create Account</h3>
+            <p className="text-xs text-slate-400">Join Salary Tracker CRM in 30 seconds</p>
           </div>
 
           {error && (

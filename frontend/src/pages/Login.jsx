@@ -125,25 +125,9 @@ export const Login = ({ onSwitchToRegister }) => {
         {/* Right Form Card (7 cols) */}
         <div className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-center bg-slate-900/40">
           
-          {/* Header Segmented Switcher */}
-          <div className="flex sm:flex-column items-center justify-between mb-6">
-            <div>
-              <h3 className="text-lg font-bold text-white">Welcome Back</h3>
-              <p className="text-xs text-slate-400">Sign in to access your financial dashboard</p>
-            </div>
-            {/* Tabs */}
-            <div className="flex p-1 bg-slate-800/80 rounded-xl border border-white/5 text-xs font-semibold">
-              <span className="px-3 py-1.5 rounded-lg bg-emerald-500 text-white shadow-sm font-bold">
-                Sign In
-              </span>
-              <Link
-                to="/register"
-                onClick={onSwitchToRegister}
-                className="px-3 py-1.5 rounded-lg text-slate-400 hover:text-white transition-colors"
-              >
-                Register
-              </Link>
-            </div>
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-white">Welcome Back</h3>
+            <p className="text-xs text-slate-400">Sign in to access your financial dashboard</p>
           </div>
 
           {error && (
@@ -204,28 +188,16 @@ export const Login = ({ onSwitchToRegister }) => {
             </button>
           </form>
 
-          {/* 1-Click Demo Login */}
-          <div className="pt-4 mt-4 border-t border-slate-800 space-y-3">
-            <button
-              type="button"
-              onClick={handleDemoLogin}
-              disabled={loading}
-              className="w-full py-2.5 bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-slate-200 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 group"
+          {/* Create Account Link */}
+          <div className="pt-4 mt-4 border-t border-slate-800 text-center text-xs text-slate-400">
+            Need a new account?{' '}
+            <Link
+              to="/register"
+              onClick={onSwitchToRegister}
+              className="font-bold text-emerald-400 hover:text-emerald-300 underline underline-offset-4"
             >
-              <Sparkles className="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" />
-              <span>1-Click Demo Login (Admin Access)</span>
-            </button>
-
-            <div className="text-center text-xs text-slate-400">
-              Need a new account?{' '}
-              <Link
-                to="/register"
-                onClick={onSwitchToRegister}
-                className="font-bold text-emerald-400 hover:text-emerald-300 underline underline-offset-4"
-              >
-                Create an account
-              </Link>
-            </div>
+              Create an account
+            </Link>
           </div>
 
         </div>
