@@ -7,13 +7,21 @@ const JWT_SECRET = process.env.JWT_SECRET || 'salary_tracker_crm_jwt_secret_toke
 
 const auth = async (req, res, next) => {
   try {
+    let token = null;
     const authHeader = req.header('Authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log(`\x1b[31m[AUTH FAILURE]\x1b[0m Access denied: No Bearer token provided on ${req.method} ${req.originalUrl}`);
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.replace('Bearer ', '');
+    } else if (req.query && req.query.token) {
+      token = req.query.token;
+    } else if (req.header('x-access-token')) {
+      token = req.header('x-access-token');
+    }
+
+    if (!token) {
+      console.log(`\x1b[31m[AUTH FAILURE]\x1b[0m Access denied: No token provided on ${req.method} ${req.originalUrl}`);
       return res.status(401).json({ success: false, message: 'Authentication required. No token provided.' });
     }
 
-    const token = authHeader.replace('Bearer ', '');
     const decoded = jwt.verify(token, JWT_SECRET);
 
     let user = null;

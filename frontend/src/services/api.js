@@ -247,8 +247,30 @@ export const api = {
     return handleResponse(res);
   },
   getExportCsvUrl: (month, year) => {
-    const token = localStorage.getItem('salary_crm_token');
-    return `${API_BASE}/reports/export-csv?month=${month}&year=${year}&token=${token}`;
+    const token = localStorage.getItem('salary_crm_token') || '';
+    return `${API_BASE}/reports/export-csv?month=${month}&year=${year}&token=${encodeURIComponent(token)}`;
+  },
+  exportCsv: async (month, year) => {
+    const token = localStorage.getItem('salary_crm_token') || '';
+    const res = await fetch(`${API_BASE}/reports/export-csv?month=${month}&year=${year}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ message: 'Failed to export CSV' }));
+      throw new Error(err.message || 'Failed to export CSV');
+    }
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `salary-tracker-transactions-${year}-${month}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+    return true;
   },
 
   // Seed demo
