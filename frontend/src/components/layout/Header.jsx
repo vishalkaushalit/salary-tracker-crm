@@ -106,33 +106,47 @@ export const Header = ({
 
       <div className="flex items-center justify-between gap-2 sm:gap-4 max-w-7xl mx-auto">
         
-        {/* Left: Active Period Picker & Subtitle (shrink-0 prevents overlapping) */}
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100/90 hover:bg-slate-200/70 transition-colors px-2 py-1.5 sm:px-3 rounded-xl border border-slate-200 text-slate-800">
-            <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600 shrink-0" />
-            <select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(Number(e.target.value))}
-              className="bg-transparent font-semibold text-xs sm:text-sm text-slate-800 focus:outline-none cursor-pointer pr-1"
-            >
-              {MONTHS.map((m) => (
-                <option key={m.value} value={m.value}>
-                  {isMobile ? m.short : m.name}
-                </option>
-              ))}
-            </select>
-            <select
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(Number(e.target.value))}
-              className="bg-transparent font-semibold text-xs sm:text-sm text-slate-800 focus:outline-none cursor-pointer border-l border-slate-300 pl-1.5 sm:pl-2"
-            >
-              <option value={2026}>2026</option>
-              <option value={2025}>2025</option>
-            </select>
+        {/* Left: Mobile shows Logo, Desktop shows Active Period Picker & Subtitle */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          {/* Mobile Logo: Only visible on mobile screens (< md) */}
+          <Link to="/" className="flex items-center gap-2.5 md:hidden group" title="Salary Tracker Dashboard">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-sm shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+              <DollarSign className="w-5 h-5 stroke-[2.5]" />
+            </div>
+            <div>
+              <div className="font-bold text-sm text-slate-900 leading-tight tracking-tight">Salary Tracker</div>
+              <div className="text-[9px] font-semibold tracking-wider uppercase text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded w-fit leading-tight">CRM Dashboard</div>
+            </div>
+          </Link>
+
+          {/* Desktop Active Period Picker & Subtitle (Hidden on mobile < md, visible on md and up) */}
+          <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-100/90 hover:bg-slate-200/70 transition-colors px-2 py-1.5 sm:px-3 rounded-xl border border-slate-200 text-slate-800">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-600 shrink-0" />
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+                className="bg-transparent font-semibold text-xs sm:text-sm text-slate-800 focus:outline-none cursor-pointer pr-1"
+              >
+                {MONTHS.map((m) => (
+                  <option key={m.value} value={m.value}>
+                    {m.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                className="bg-transparent font-semibold text-xs sm:text-sm text-slate-800 focus:outline-none cursor-pointer border-l border-slate-300 pl-1.5 sm:pl-2"
+              >
+                <option value={2026}>2026</option>
+                <option value={2025}>2025</option>
+              </select>
+            </div>
+            <span className="hidden xl:inline-block text-xs font-medium text-slate-400 truncate">
+              Financial Dashboard
+            </span>
           </div>
-          <span className="hidden xl:inline-block text-xs font-medium text-slate-400 truncate">
-            Financial Dashboard
-          </span>
         </div>
 
         {/* Right: Actions, Notifications & Profile */}
@@ -173,8 +187,8 @@ export const Header = ({
             </button>
           </div>
 
-          {/* Mobile / Tablet Compact '+ Add' Dropdown */}
-          <div ref={addMenuRef} className="lg:hidden relative">
+          {/* Tablet Compact '+ Add' Dropdown (Hidden on mobile < md, visible on tablet md to lg) */}
+          <div ref={addMenuRef} className="hidden md:block lg:hidden relative">
             <button
               onClick={() => {
                 setShowAddMenu(!showAddMenu);
@@ -360,7 +374,7 @@ export const Header = ({
                 <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full" />
               </div>
 
-              <div className="leading-tight">
+              <div className="hidden sm:block leading-tight">
                 <p className="text-xs font-bold text-slate-800 truncate max-w-[100px] sm:max-w-[120px] group-hover:text-emerald-700 transition-colors">
                   {user?.name || 'Admin User'}
                 </p>
@@ -371,7 +385,7 @@ export const Header = ({
                 </div>
               </div>
 
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${showUserMenu ? 'rotate-180 text-emerald-600' : ''}`} />
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${showUserMenu ? 'rotate-180 text-emerald-600' : ''} hidden sm:block`} />
             </button>
 
             {showUserMenu && (
@@ -424,6 +438,36 @@ export const Header = ({
 
         </div>
 
+      </div>
+
+      {/* Mobile Month/Year Picker: Displayed below on mobile (< md) */}
+      <div className="md:hidden mt-2 pt-2 border-t border-slate-100 max-w-7xl mx-auto">
+        <div className="flex items-center gap-2 bg-slate-100/90 hover:bg-slate-200/70 transition-colors px-3 py-1.5 rounded-xl border border-slate-200 text-slate-800 justify-between">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <Calendar className="w-4 h-4 text-slate-600 shrink-0" />
+            <select
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(Number(e.target.value))}
+              className="bg-transparent font-semibold text-xs sm:text-sm text-slate-800 focus:outline-none cursor-pointer flex-1"
+            >
+              {MONTHS.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center border-l border-slate-300 pl-2 shrink-0">
+            <select
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="bg-transparent font-semibold text-xs sm:text-sm text-slate-800 focus:outline-none cursor-pointer"
+            >
+              <option value={2026}>2026</option>
+              <option value={2025}>2025</option>
+            </select>
+          </div>
+        </div>
       </div>
     </header>
   );

@@ -126,7 +126,7 @@ export const Login = ({ onSwitchToRegister }) => {
         <div className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-center bg-slate-900/40">
           
           {/* Header Segmented Switcher */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex sm:flex-column items-center justify-between mb-6">
             <div>
               <h3 className="text-lg font-bold text-white">Welcome Back</h3>
               <p className="text-xs text-slate-400">Sign in to access your financial dashboard</p>
