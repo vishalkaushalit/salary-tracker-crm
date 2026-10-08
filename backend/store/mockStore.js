@@ -26,6 +26,19 @@ const mockStore = {
       profile_image: '',
       role: 'admin',
       created_at: new Date('2026-05-01')
+    },
+    {
+      _id: 'user-admin-2',
+      id: 'user-admin-2',
+      name: 'Admin User',
+      email: 'admin@crm.com',
+      password: bcrypt.hashSync('admin', 10),
+      phone: '+91 98765 43210',
+      currency: '₹',
+      savings_target: 25000,
+      profile_image: '',
+      role: 'admin',
+      created_at: new Date('2026-05-01')
     }
   ],
   categories: [...defaultCategories],
