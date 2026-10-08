@@ -28,8 +28,8 @@ export const Loader = ({
   // Inline small loader
   if (variant === 'inline') {
     return (
-      <div className="flex items-center gap-2.5 text-xs text-slate-500 font-medium py-2">
-        <div className="relative w-4 h-4">
+      <div className="flex items-center justify-center gap-2.5 text-xs text-slate-500 font-medium py-2 px-3">
+        <div className="relative w-4 h-4 shrink-0">
           <div className="absolute inset-0 rounded-full border-2 border-emerald-500/20" />
           <div className="absolute inset-0 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
         </div>
