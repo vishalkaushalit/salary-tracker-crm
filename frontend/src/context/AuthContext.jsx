@@ -44,12 +44,34 @@ export const AuthProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [token]);
 
+  const [loginNotification, setLoginNotification] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+
+  const dismissNotification = () => {
+    setLoginNotification(null);
+  };
+
   const login = async (email, password) => {
     const res = await api.login(email, password);
     if (res.success) {
       localStorage.setItem('salary_crm_token', res.token);
       setToken(res.token);
       setUser(res.user);
+
+      const notif = {
+        id: Date.now(),
+        title: 'Login Successful',
+        message: `Welcome back, ${res.user?.name || 'User'}!`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        type: 'success'
+      };
+      setLoginNotification(notif);
+      setNotifications(prev => [notif, ...prev]);
+
+      // Auto-dismiss floating toast after 5s
+      setTimeout(() => {
+        setLoginNotification(prev => (prev?.id === notif.id ? null : prev));
+      }, 5000);
     }
     return res;
   };
@@ -60,6 +82,20 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('salary_crm_token', res.token);
       setToken(res.token);
       setUser(res.user);
+
+      const notif = {
+        id: Date.now(),
+        title: 'Account Created',
+        message: `Welcome, ${res.user?.name || 'User'}! Your profile is ready.`,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        type: 'success'
+      };
+      setLoginNotification(notif);
+      setNotifications(prev => [notif, ...prev]);
+
+      setTimeout(() => {
+        setLoginNotification(prev => (prev?.id === notif.id ? null : prev));
+      }, 5000);
     }
     return res;
   };
@@ -68,6 +104,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('salary_crm_token');
     setToken(null);
     setUser(null);
+    setLoginNotification(null);
   };
 
   const updateUserProfile = async (data) => {
@@ -85,6 +122,9 @@ export const AuthProvider = ({ children }) => {
         token,
         loading,
         dbStatus,
+        loginNotification,
+        notifications,
+        dismissNotification,
         login,
         register,
         logout,

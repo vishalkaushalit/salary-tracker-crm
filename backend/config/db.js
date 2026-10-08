@@ -3,6 +3,11 @@ const mongoose = require('mongoose');
 let isConnected = false;
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    isConnected = true;
+    return true;
+  }
+
   const uri = process.env.MONGODB_URI;
 
   if (!uri || uri.includes('username:password') || uri.includes('<username>')) {

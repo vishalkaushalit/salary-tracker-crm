@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install --legacy-peer-deps && npm run build",
-  "outputDirectory": "frontend/dist",
+  "buildCommand": "node bin/vite.js",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/(.*)",

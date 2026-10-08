@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency } from '../../utils/currency';
 import { formatRelativeDate } from '../../utils/date';
+import { CategoryBadge } from '../common/CategoryBadge';
 
 const getCategoryIcon = (category) => {
   const cat = (category || '').toLowerCase();
@@ -65,7 +66,7 @@ export const RecentTransactions = ({ transactions = [], onViewAll, currency = 'â
                 <div className="min-w-0">
                   <p className="font-semibold text-xs text-slate-900 truncate">{tx.title}</p>
                   <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                    <span className="truncate">{tx.category}</span>
+                    <CategoryBadge category={tx.category} size="xs" />
                     <span>â€¢</span>
                     <span className="shrink-0">{formatRelativeDate(tx.transaction_date)}</span>
                   </div>

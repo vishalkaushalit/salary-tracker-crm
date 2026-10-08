@@ -22,8 +22,18 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Connect to MongoDB
+// Connect to MongoDB on launch
 connectDB();
+
+// Ensure DB connection on serverless cold starts (Vercel) without slowing down local requests
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    // Ignore error and allow fallback
+  }
+  next();
+});
 
 // API Routes
 app.use('/api/auth', authRoutes);

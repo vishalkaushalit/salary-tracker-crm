@@ -19,6 +19,7 @@ import { formatCurrency } from '../utils/currency';
 import { formatDate } from '../utils/date';
 import { useAuth } from '../context/AuthContext';
 import { Loader } from '../components/common/Loader';
+import { CategoryBadge } from '../components/common/CategoryBadge';
 
 export const Transactions = ({
   selectedMonth,
@@ -351,9 +352,7 @@ export const Transactions = ({
                       )}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700">
-                        {tx.category}
-                      </span>
+                      <CategoryBadge category={tx.category} />
                     </td>
                     <td className="py-3.5 px-4 text-slate-600 font-medium">
                       {tx.payment_method}

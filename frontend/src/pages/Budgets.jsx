@@ -5,6 +5,7 @@ import { formatCurrency } from '../utils/currency';
 import { MONTHS } from '../utils/date';
 import { useAuth } from '../context/AuthContext';
 import { Loader } from '../components/common/Loader';
+import { CategoryBadge } from '../components/common/CategoryBadge';
 
 export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudgetChange, refreshTrigger }) => {
   const { user } = useAuth();
@@ -131,7 +132,7 @@ export const Budgets = ({ selectedMonth, selectedYear, onOpenBudgetModal, onBudg
             <div key={b._id || b.id} className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-bold text-slate-900 text-sm truncate pr-2">{b.category}</h3>
+                  <CategoryBadge category={b.category} size="md" />
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}`}>
                       {pct}%
