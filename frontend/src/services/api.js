@@ -12,7 +12,9 @@ const getAuthHeaders = () => {
 const handleResponse = async (res) => {
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({ message: res.statusText }));
-    throw new Error(errorData.message || 'Request failed');
+    const error = new Error(errorData.message || 'Request failed');
+    error.status = res.status;
+    throw error;
   }
   return res.json();
 };

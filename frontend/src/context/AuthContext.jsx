@@ -4,9 +4,21 @@ import { api } from '../services/api';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('salary_crm_token') || null);
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(() => localStorage.getItem('salary_crm_token') || null);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('salary_crm_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
+  // Only show initial blocking loader if token exists but cached user is missing
+  const [loading, setLoading] = useState(() => {
+    const savedToken = localStorage.getItem('salary_crm_token');
+    const savedUser = localStorage.getItem('salary_crm_user');
+    return !savedUser && !!savedToken;
+  });
   const [dbStatus, setDbStatus] = useState({ connected: false, readyState: 0 });
 
   const checkDbStatus = async () => {
@@ -21,17 +33,29 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loadUser = async () => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      if (token) {
-        const res = await api.getMe();
-        if (res.success) {
-          setUser(res.user);
-        } else {
-          logout();
-        }
+      const res = await api.getMe();
+      if (res.success && res.user) {
+        setUser(res.user);
+        localStorage.setItem('salary_crm_user', JSON.stringify(res.user));
+      } else if (res.status === 401) {
+        logout();
       }
-    } catch {
-      logout();
+    } catch (err) {
+      // ONLY logout if server explicitly rejected the token with HTTP 401 Unauthorized
+      if (err?.status === 401) {
+        console.warn('Session expired or invalid, logging out.');
+        logout();
+      } else {
+        // Backend temporarily compiling, proxy reconnecting, or offline:
+        // Do NOT log out! Keep the cached user session intact.
+        console.warn('Backend is temporarily unreachable; retaining cached user session:', err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -55,6 +79,7 @@ export const AuthProvider = ({ children }) => {
     const res = await api.login(email, password);
     if (res.success) {
       localStorage.setItem('salary_crm_token', res.token);
+      localStorage.setItem('salary_crm_user', JSON.stringify(res.user));
       setToken(res.token);
       setUser(res.user);
 
@@ -80,6 +105,7 @@ export const AuthProvider = ({ children }) => {
     const res = await api.register(userData);
     if (res.success) {
       localStorage.setItem('salary_crm_token', res.token);
+      localStorage.setItem('salary_crm_user', JSON.stringify(res.user));
       setToken(res.token);
       setUser(res.user);
 
@@ -102,6 +128,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     localStorage.removeItem('salary_crm_token');
+    localStorage.removeItem('salary_crm_user');
     setToken(null);
     setUser(null);
     setLoginNotification(null);
@@ -110,7 +137,11 @@ export const AuthProvider = ({ children }) => {
   const updateUserProfile = async (data) => {
     const res = await api.updateProfile(data);
     if (res.success) {
-      setUser(prev => ({ ...prev, ...res.user }));
+      setUser(prev => {
+        const updated = { ...prev, ...res.user };
+        localStorage.setItem('salary_crm_user', JSON.stringify(updated));
+        return updated;
+      });
     }
     return res;
   };

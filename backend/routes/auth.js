@@ -64,7 +64,7 @@ router.post('/register', async (req, res) => {
         console.log('Starter salary note:', salaryErr.message);
       }
 
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
 
       console.log(`\x1b[32m[AUTH SUCCESS]\x1b[0m Registered new user in MongoDB: ${user.name} (${user.email}) | ID: ${user._id}`);
 
@@ -104,7 +104,7 @@ router.post('/register', async (req, res) => {
       };
 
       mockStore.users.push(newUser);
-      const token = jwt.sign({ id: newUser._id }, JWT_SECRET, { expiresIn: '30d' });
+      const token = jwt.sign({ id: newUser._id, email: newUser.email }, JWT_SECRET, { expiresIn: '30d' });
 
       console.log(`\x1b[32m[AUTH SUCCESS]\x1b[0m Registered new user in MockStore: ${newUser.name} (${newUser.email}) | ID: ${newUser._id}`);
 
@@ -153,7 +153,7 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid credentials.' });
       }
 
-      const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '30d' });
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
 
       console.log(`\x1b[32m[AUTH SUCCESS]\x1b[0m Login successful: ${user.name} (${user.email}) | ID: ${user._id}`);
 
@@ -183,7 +183,7 @@ router.post('/login', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid credentials.' });
       }
 
-      const token = jwt.sign({ id: user._id || user.id }, JWT_SECRET, { expiresIn: '30d' });
+      const token = jwt.sign({ id: user._id || user.id, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
 
       console.log(`\x1b[32m[AUTH SUCCESS]\x1b[0m Login successful (mockStore): ${user.name} (${user.email}) | ID: ${user._id || user.id}`);
 
