@@ -240,7 +240,7 @@ export const Register = ({ onSwitchToLogin }) => {
               onClick={onSwitchToLogin}
               className="font-bold text-emerald-400 hover:text-emerald-300 underline underline-offset-4"
             >
-              Sign In to existing workspace
+              Sign In
             </Link>
           </div>
 
