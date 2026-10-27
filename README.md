@@ -39,7 +39,7 @@ A modern, full-stack **Salary Tracker CRM Dashboard** designed for individuals a
 * **Header Alerts Bell**: Notification center showing active budget warnings.
 
 ### 5. 📈 Month-over-Month Comparative Reports
-* **Side-by-Side Comparison**: Select any two months (e.g. September vs October) to analyze percentage shifts in salary, spending, and savings.
+* **Side-by-Side Comparison**: Select any two months (e.g. October vs November) to analyze percentage shifts in salary, spending, and savings.
 * **Printable Statements**: Clean printable invoice-style summary layout.
 * **CSV Export**: Direct export of monthly financial statements.
 
@@ -51,7 +51,7 @@ A modern, full-stack **Salary Tracker CRM Dashboard** designed for individuals a
 * **User Profile**: Update profile name, phone number, and monthly savings goal.
 * **Currency Formatting**: Support for **₹ (INR)**, **$ (USD)**, **€ (EUR)**, **£ (GBP)**, and **AED**.
 * **Live MongoDB Status**: Real-time health badge verifying connection to MongoDB Atlas.
-* **Demo Data Seeder**: 1-click database loader for PRD October 2026 data and historical periods.
+* **Demo Data Seeder**: 1-click database loader for October 2026 data.
 
 ---
 
@@ -221,7 +221,7 @@ You can use the demo admin credentials or click the **"Quick Demo Login"** butto
 | `POST` | `/api/categories` | Create custom category |
 | `DELETE` | `/api/categories/:id` | Delete custom category |
 | `GET` | `/api/dashboard/summary` | Fetch top 4 KPI cards & snapshot summary |
-| `GET` | `/api/dashboard/monthly` | Fetch 6-month historical area/bar chart data |
+| `GET` | `/api/dashboard/monthly` | Fetch recorded monthly area/bar chart data |
 | `GET` | `/api/dashboard/category-expenses` | Fetch category spending breakdown for donut chart |
 | `GET` | `/api/dashboard/daily-expenses` | Fetch daily spending line chart data |
 | `GET` | `/api/reports/compare` | Month-over-month comparative analysis |

@@ -44,91 +44,6 @@ const mockStore = {
   categories: [...defaultCategories],
   salaries: [
     {
-      _id: 'sal-1',
-      id: 'sal-1',
-      user_id: 'user-admin-1',
-      month: 5,
-      year: 2026,
-      base_salary: 30000,
-      bonus: 0,
-      commission: 0,
-      other_income: 0,
-      tax: 0,
-      deductions: 0,
-      net_salary: 30000,
-      payment_date: '2026-05-01',
-      notes: 'May standard salary',
-      created_at: new Date('2026-05-01')
-    },
-    {
-      _id: 'sal-2',
-      id: 'sal-2',
-      user_id: 'user-admin-1',
-      month: 6,
-      year: 2026,
-      base_salary: 30000,
-      bonus: 0,
-      commission: 0,
-      other_income: 0,
-      tax: 0,
-      deductions: 0,
-      net_salary: 30000,
-      payment_date: '2026-06-01',
-      notes: 'June salary',
-      created_at: new Date('2026-06-01')
-    },
-    {
-      _id: 'sal-3',
-      id: 'sal-3',
-      user_id: 'user-admin-1',
-      month: 7,
-      year: 2026,
-      base_salary: 30000,
-      bonus: 0,
-      commission: 0,
-      other_income: 0,
-      tax: 0,
-      deductions: 0,
-      net_salary: 30000,
-      payment_date: '2026-07-01',
-      notes: 'July salary',
-      created_at: new Date('2026-07-01')
-    },
-    {
-      _id: 'sal-4',
-      id: 'sal-4',
-      user_id: 'user-admin-1',
-      month: 8,
-      year: 2026,
-      base_salary: 30000,
-      bonus: 0,
-      commission: 0,
-      other_income: 0,
-      tax: 0,
-      deductions: 0,
-      net_salary: 30000,
-      payment_date: '2026-08-01',
-      notes: 'August salary',
-      created_at: new Date('2026-08-01')
-    },
-    {
-      _id: 'sal-5',
-      id: 'sal-5',
-      user_id: 'user-admin-1',
-      month: 9,
-      year: 2026,
-      base_salary: 30000,
-      bonus: 0,
-      commission: 0,
-      other_income: 0,
-      tax: 0,
-      deductions: 0,
-      net_salary: 30000,
-      payment_date: '2026-09-01',
-      notes: 'September salary',
-      created_at: new Date('2026-09-01')
-    },
-    {
       _id: 'sal-6',
       id: 'sal-6',
       user_id: 'user-admin-1',
@@ -156,18 +71,6 @@ const mockStore = {
     { _id: 'b-7', id: 'b-7', user_id: 'user-admin-1', category: 'Others', month: 10, year: 2026, amount: 11000 }
   ],
   transactions: [
-    // Historical Monthly totals:
-    // May: ₹22,000
-    { _id: 'tx-m-1', id: 'tx-m-1', user_id: 'user-admin-1', title: 'May Expenses Total', amount: 22000, type: 'expense', category: 'Others', payment_method: 'Bank Transfer', transaction_date: '2026-05-15T10:00:00.000Z', notes: 'Monthly total for May' },
-    // Jun: ₹25,400
-    { _id: 'tx-jn-1', id: 'tx-jn-1', user_id: 'user-admin-1', title: 'June Expenses Total', amount: 25400, type: 'expense', category: 'Others', payment_method: 'Bank Transfer', transaction_date: '2026-06-15T10:00:00.000Z', notes: 'Monthly total for June' },
-    // Jul: ₹21,800
-    { _id: 'tx-jl-1', id: 'tx-jl-1', user_id: 'user-admin-1', title: 'July Expenses Total', amount: 21800, type: 'expense', category: 'Others', payment_method: 'Bank Transfer', transaction_date: '2026-07-15T10:00:00.000Z', notes: 'Monthly total for July' },
-    // Aug: ₹28,600
-    { _id: 'tx-ag-1', id: 'tx-ag-1', user_id: 'user-admin-1', title: 'August Expenses Total', amount: 28600, type: 'expense', category: 'Others', payment_method: 'Bank Transfer', transaction_date: '2026-08-15T10:00:00.000Z', notes: 'Monthly total for August' },
-    // Sep: ₹26,300
-    { _id: 'tx-sp-1', id: 'tx-sp-1', user_id: 'user-admin-1', title: 'September Expenses Total', amount: 26300, type: 'expense', category: 'Others', payment_method: 'Bank Transfer', transaction_date: '2026-09-15T10:00:00.000Z', notes: 'Monthly total for September' },
-
     // October 2026 Transactions (matching sum ₹28,450 exactly)
     { _id: 'tx-1', id: 'tx-1', user_id: 'user-admin-1', title: 'Dinner', description: 'Weekend dinner with friends', amount: 850, type: 'expense', category: 'Food', payment_method: 'UPI', transaction_date: '2026-10-08T20:30:00.000Z', notes: 'At cafe', account: 'HDFC Bank' },
     { _id: 'tx-2', id: 'tx-2', user_id: 'user-admin-1', title: 'Uber', description: 'Cab ride to client office', amount: 320, type: 'expense', category: 'Transportation', payment_method: 'UPI', transaction_date: '2026-10-07T14:15:00.000Z', notes: '', account: 'HDFC Bank' },

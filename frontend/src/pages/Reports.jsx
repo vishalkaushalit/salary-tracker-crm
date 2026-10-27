@@ -20,9 +20,9 @@ export const Reports = ({ selectedMonth, selectedYear, refreshTrigger }) => {
   const currency = user?.currency || '₹';
 
   // Compare month A vs Month B
-  const [monthA, setMonthA] = useState(9); // September
+  const [monthA, setMonthA] = useState(10); // October
   const [yearA, setYearA] = useState(2026);
-  const [monthB, setMonthB] = useState(10); // October
+  const [monthB, setMonthB] = useState(11); // November
   const [yearB, setYearB] = useState(2026);
 
   const [compareData, setCompareData] = useState(null);

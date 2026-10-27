@@ -68,7 +68,7 @@ async function seedAtlas() {
       payment_date: new Date(s.payment_date),
       notes: s.notes
     })));
-    console.log(`✅ 6 Monthly Salaries (₹30,000 each) seeded.`);
+    console.log(`✅ ${mockStore.salaries.length} Monthly Salaries (₹30,000 each) seeded.`);
 
     // Budgets
     await Budget.deleteMany({ user_id: admin._id });

@@ -42,7 +42,7 @@ export const Settings = ({ onDataReloaded }) => {
   };
 
   const handleSeedData = async () => {
-    if (window.confirm('Populate/Reset the database with PRD October 2026 and historical test data?')) {
+    if (window.confirm('Populate/Reset the database with October 2026 demo data?')) {
       try {
         setLoadingSeed(true);
         const res = await api.seedDemo();
@@ -202,7 +202,7 @@ export const Settings = ({ onDataReloaded }) => {
             <span>{loadingSeed ? 'Seeding...' : 'Load / Reset PRD October 2026 Sample Data'}</span>
           </button>
           <p className="text-[11px] text-slate-400 mt-1">
-            Pre-populates the exact figures specified in your PRD (₹50,000 salary, ₹28,450 expenses across 7 categories, and historical months May-Oct 2026).
+            Pre-populates October 2026 demo data (₹30,000 salary and ₹28,450 expenses across 7 categories).
           </p>
         </div>
       </div>

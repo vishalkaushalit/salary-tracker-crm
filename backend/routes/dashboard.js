@@ -195,20 +195,8 @@ router.get('/monthly', auth, async (req, res) => {
       });
     }
 
-    // Default historical baseline data with 30,000 monthly salary
-    const defaultData = [
-      { month: 'May', monthNum: 5, salary: 30000, expenses: 22000, savings: 8000 },
-      { month: 'Jun', monthNum: 6, salary: 30000, expenses: 25400, savings: 4600 },
-      { month: 'Jul', monthNum: 7, salary: 30000, expenses: 21800, savings: 8200 },
-      { month: 'Aug', monthNum: 8, salary: 30000, expenses: 28600, savings: 1400 },
-      { month: 'Sep', monthNum: 9, salary: 30000, expenses: 26300, savings: 3700 },
-      { month: 'Oct', monthNum: 10, salary: 30000, expenses: 28450, savings: 1550 },
-    ];
-
+    // Build chart data from recorded salaries and expenses only.
     const monthlyMap = {};
-    defaultData.forEach(d => {
-      monthlyMap[d.monthNum] = { ...d };
-    });
 
     salaries.forEach(s => {
       const m = s.month;
@@ -221,7 +209,7 @@ router.get('/monthly', auth, async (req, res) => {
           savings: 0
         };
       }
-      monthlyMap[m].salary = s.net_salary || s.base_salary;
+      monthlyMap[m].salary = s.net_salary ?? s.base_salary;
     });
 
     // Group actual transactions dynamically
